@@ -26,6 +26,32 @@ This repository implements a ROS driver to control an omnidirectional robot
 - [geometry_msgs](https://wiki.ros.org/geometry_msgs)
 - [joy](https://wiki.ros.org/joy)
 
+### Parameters
+
+- axis_linear_x (`int = 1`): index number of x linear axis (`/joy.axes`)
+- axis_linear_y (`int = 2`): index number of y linear axis (`/joy.axes`)
+- axis_angular (`int = 0`): index number of angular linear axis (`/joy.axes`)
+- axis_deadman (`int = 4`): index number of button for deadman switch
+  (`/joy.buttons`)
+- axis_turbo (`int = 5`): index number of button for turbo (`/joy.buttons`)
+- axis_turbo_up (`int = 6`): index number of button for increasing boost
+  (`/joy.buttons`)
+- axis_turbo_down (`int = 7`): index number of button for decreasing boost
+  (`/joy.buttons`)
+- scale_angular (`double = 0.2`): angular scale to normalize
+  [`Joy.msg`](https://docs.ros.org/en/melodic/api/sensor_msgs/html/msg/Joy.html)
+- scale_linear (`double = 0.1`): linear scale to normalize
+  [`Joy.msg`](https://docs.ros.org/en/melodic/api/sensor_msgs/html/msg/Joy.html)
+- turbo_scale_linear (`double = 0.2`): use this scale instead of `scale_linear`
+  when pressing the turbo button
+- turbo_max_scale_linear (`double = 0.4`): maximum turbo scale
+- turbo_scale_angular (`double = 0.4`): use this scale instead of
+  `scale_angular` when pressing the turbo button
+
+In order to know the index numbers of your controller, go to
+[joy](https://wiki.ros.org/joy) documentation, _5. Application_, to see the
+options available for those parameters.
+
 ### Subscribes
 
 - joy
