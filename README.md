@@ -15,19 +15,20 @@ No further development is foreseen for this package.
 
 ## ROS
 
-**foxy**
+**ROS 1**
+
+- [Ubuntu 20.04.6 LTS](https://releases.ubuntu.com/focal/)
+- [ROS Noetic](https://wiki.ros.org/noetic)
+
+**ROS 2**
 
 - [Ubuntu 20.04.6 LTS](https://releases.ubuntu.com/focal/)
 - [ROS 2 Foxy](https://docs.ros.org/en/foxy/)
 
-**noetic**
-
-- [Ubuntu 20.04.6 LTS](https://releases.ubuntu.com/focal/)
-- [ROS 1 Noetic](https://wiki.ros.org/noetic/)
-
 ### Dependencies
 
-- [rclcpp](https://index.ros.org/r/rclcpp/)
+- [rclcpp](https://index.ros.org/r/rclcpp/) (_ROS 2_)
+- [roscpp](https://wiki.ros.org/roscpp/) (_ROS 1_)
 - [geometry_msgs](https://index.ros.org/p/geometry_msgs/)
 - [joy](https://index.ros.org/p/joy/)
 - [sensor_msgs](https://index.ros.org/p/sensor_msgs/)
@@ -59,13 +60,11 @@ options available for those parameters.
 
 ### Subscribes
 
-- joy
-([`Joy.msg`](https://docs.ros2.org/foxy/api/sensor_msgs/msg/Joy.html))
+- joy (`sensor_msgs::Joy.msg`)
 
 ### Publishes
 
-- cmd_vel
-  ([Twist.msg](https://docs.ros2.org/foxy/api/geometry_msgs/msg/Twist.html))
+- cmd_vel (`geometry_msgs::Twist.msg`)
 
 ### Services
 
@@ -77,10 +76,33 @@ None.
 
 ## Usage
 
-### Build
+### Compilation
+
+**ROS 1**
 
 ```sh
-# ROS 2
+# ROS 1 environment setup
+source source /opt/ros/noetic/setup.bash
+
+# Create workspace
+mkdir -p ~/ros1_ws/src
+
+# Clone the repository
+cd ~/ros1_ws/src
+git clone git@github.com:5dpo/5dpo_omnijoy_driver.git
+
+# Build
+cd ~/ros1_ws
+catkin_make
+# OR catkin_make_isolated (more slow, build and check dependencies individually)
+# OR catkin build (requires the Pyhton-based catkin tools)
+source devel/setup.bash
+```
+
+**ROS 2**
+
+```sh
+# ROS 2 environment setup
 source /opt/ros/foxy/setup.bash
 
 # Create workspace
@@ -91,14 +113,23 @@ cd ~/ros2_ws/src
 git clone git@github.com:5dpo/5dpo_omnijoy_driver.git
 
 # Build
+cd ~/ros2_ws
 colcon build
 source install/setup.bash
 ```
 
 ### Launch
 
+**ROS 1**
+
 ```sh
-roslaunch sdpo_omnijoy_driver sdpo_omnijoy_driver_logif710.launch.xml
+roslaunch sdpo_omnijoy_driver sdpo_omnijoy_driver_logif710.launch
+```
+
+**ROS 2**
+
+```sh
+ros2 launch sdpo_omnijoy_driver sdpo_omnijoy_driver_logif710.launch.xml
 ```
 
 ## Acknowledges
