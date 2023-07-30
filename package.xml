@@ -19,6 +19,7 @@
 
   <author email="amoreira@fe.up.pt">António Paulo Moreira</author>
   <author email="claudia.d.rocha@inesctec.pt">Cláudia Daniela Rocha</author>
+  <author email="heber.m.sobreira@inesctec.pt">Héber Miguel Sobreira</author>
   <author email="joao.g.martins@inesctec.pt">João G. Martins</author>
   <author email="up201806431@edu.fe.up.pt">João Pedro Costa</author>
   <author email="joaotomasmfgp@hotmail.com">João Tomás Padrão</author>
@@ -34,20 +35,32 @@
 
 
 
-  <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <depend>rclcpp</depend>
+
+  <buildtool_depend condition="$ROS_VERSION == 2">ament_cmake</buildtool_depend>
+  <buildtool_depend condition="$ROS_VERSION == 1">catkin</buildtool_depend>
+
+
+
+  <depend condition="$ROS_VERSION == 2">rclcpp</depend>
+  <depend condition="$ROS_VERSION == 1">roscpp</depend>
+
   <depend>geometry_msgs</depend>
   <depend>joy</depend>
   <depend>sensor_msgs</depend>
 
-  <test_depend>ament_lint_auto</test_depend>
-  <test_depend>ament_lint_common</test_depend>
+
+
+  <test_depend condition="$ROS_VERSION == 2">ament_lint_auto</test_depend>
+  <test_depend condition="$ROS_VERSION == 2">ament_lint_common</test_depend>
+
+
 
 
 
   <export>
-    <build_type>ament_cmake</build_type>
+    <build_type condition="$ROS_VERSION == 2">ament_cmake</build_type>
+    <build_type condition="$ROS_VERSION == 1">catkin</build_type>
   </export>
 
 </package>

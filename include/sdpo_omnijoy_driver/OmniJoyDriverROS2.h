@@ -11,7 +11,7 @@
 namespace sdpo_omnijoy_driver
 {
 
-class OmniJoyDriverROS : public rclcpp::Node
+class OmniJoyDriverROS2 : public rclcpp::Node
 {
 
  private:
@@ -58,7 +58,7 @@ class OmniJoyDriverROS : public rclcpp::Node
 
  public:
 
-  OmniJoyDriverROS();
+  OmniJoyDriverROS2();
 
 
 

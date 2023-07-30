@@ -19,63 +19,150 @@ endif()
 
 
 
-# Dependencies
-find_package(ament_cmake REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(geometry_msgs REQUIRED)
-find_package(joy REQUIRED)
-find_package(sensor_msgs REQUIRED)
+###################################################
+#####  >>> ROBOT OPERATING SYSTEM (ROS) 2 <<< #####
+###################################################
+
+if("$ENV{ROS_VERSION}" STREQUAL "2")
+
+  # Dependencies
+  find_package(ament_cmake REQUIRED)
+  find_package(rclcpp REQUIRED)
+  find_package(geometry_msgs REQUIRED)
+  find_package(joy REQUIRED)
+  find_package(sensor_msgs REQUIRED)
 
 
 
-# Node Executable
-add_executable(${PROJECT_NAME}
-  src/${PROJECT_NAME}/OmniJoyDriverROS.cpp
-  src/main.cpp
-)
+  # Node Executable
+  add_executable(${PROJECT_NAME}
+    src/${PROJECT_NAME}/OmniJoyDriverROS2.cpp
+    src/main_ros2.cpp
+  )
 
-target_include_directories(${PROJECT_NAME} PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
+  target_include_directories(${PROJECT_NAME} PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+  )
 
-ament_target_dependencies(${PROJECT_NAME}
-  rclcpp
-  geometry_msgs
-  joy
-  sensor_msgs
-)
-
-
-
-# Node Executable Installation Rules
-install(
-  TARGETS ${PROJECT_NAME}
-  DESTINATION lib/${PROJECT_NAME}
-)
+  ament_target_dependencies(${PROJECT_NAME}
+    rclcpp
+    geometry_msgs
+    joy
+    sensor_msgs
+  )
 
 
 
-# Launch Files Installation Rules
-install(
-  DIRECTORY launch
-  DESTINATION share/${PROJECT_NAME}
-)
+  # Node Executable Installation Rules
+  install(
+    TARGETS ${PROJECT_NAME}
+    DESTINATION lib/${PROJECT_NAME}
+  )
 
 
 
-# Default Config Installation Rules
-# install(
-#   DIRECTORY config
-#   DESTINATION share/${PROJECT_NAME}
-# )
+  # Launch Files Installation Rules
+  install(
+    DIRECTORY launch
+    DESTINATION share/${PROJECT_NAME}
+  )
 
 
 
-# Testing
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  ament_lint_auto_find_test_dependencies()
+  # Default Config Installation Rules
+  # install(
+  #   DIRECTORY config
+  #   DESTINATION share/${PROJECT_NAME}
+  # )
+
+
+
+  # Testing
+  if(BUILD_TESTING)
+    find_package(ament_lint_auto REQUIRED)
+    ament_lint_auto_find_test_dependencies()
+  endif()
+
+  ament_package()
+
+
+
+  ###################################################
+  #####  >>> ROBOT OPERATING SYSTEM (ROS) 1 <<< #####
+  ###################################################
+
+elseif("$ENV{ROS_VERSION}" STREQUAL "1")
+
+  message(AUTHOR_WARNING "Project version in ROS 1 may be deprecated")
+
+  # Find catkin macros and libraries
+  find_package(catkin REQUIRED COMPONENTS
+    roscpp
+    geometry_msgs
+    joy
+    sensor_msgs
+  )
+
+  # Catkin specific configuration
+  catkin_package(
+    INCLUDE_DIRS include
+    # LIBRARIES sdpo_drivers_interfaces
+    CATKIN_DEPENDS
+      roscpp
+      geometry_msgs
+      joy
+      sensor_msgs
+    # DEPENDS system_lib
+  )
+
+  # Build
+  # - additional header files
+  include_directories(
+    include
+    ${catkin_INCLUDE_DIRS}
+  )
+
+  # - declare a C++ executable
+  add_executable(${PROJECT_NAME}
+    src/${PROJECT_NAME}/OmniJoyDriverROS1.cpp
+    src/main_ros1.cpp
+  )
+
+  # - target dependencies
+  add_dependencies(${PROJECT_NAME}
+    ${${PROJECT_NAME}_EXPORTED_TARGETS}
+    ${catkin_EXPORTED_TARGETS}
+  )
+
+  # - specify linking libraries
+  target_link_libraries(${PROJECT_NAME}
+    ${catkin_LIBRARIES}
+  )
+
+  # - installation rules
+  install(TARGETS ${PROJECT_NAME}
+    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  )
+
+  install(DIRECTORY include/${PROJECT_NAME}/
+    DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+    FILES_MATCHING PATTERN "*.h"
+    PATTERN ".svn" EXCLUDE
+  )
+
+  install(
+    DIRECTORY launch
+    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  )
+
+
+  ##########################
+  #####  !!! ERROR !!! #####
+  ##########################
+
+else()
+
+  message(FATAL_ERROR "No valid version of ROS is installed or environment variables not set")
+
 endif()
-
-ament_package()

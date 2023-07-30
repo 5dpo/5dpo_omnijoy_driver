@@ -1,4 +1,4 @@
-#include "sdpo_omnijoy_driver/OmniJoyDriverROS.h"
+#include "sdpo_omnijoy_driver/OmniJoyDriverROS2.h"
 
 
 
@@ -7,7 +7,7 @@ namespace sdpo_omnijoy_driver
 
 using namespace std::chrono_literals;
 
-OmniJoyDriverROS::OmniJoyDriverROS() : Node("sdpo_omnijoy_driver")
+OmniJoyDriverROS2::OmniJoyDriverROS2() : Node("sdpo_omnijoy_driver")
 {
 
   try
@@ -40,19 +40,19 @@ OmniJoyDriverROS::OmniJoyDriverROS() : Node("sdpo_omnijoy_driver")
   joy_sub_ = this->create_subscription
       <sensor_msgs::msg::Joy>(
           "joy", 10,
-          std::bind(&OmniJoyDriverROS::joyCallback, this,
+          std::bind(&OmniJoyDriverROS2::joyCallback, this,
               std::placeholders::_1));
 
 
 
   timer_ = this->create_wall_timer(
-      100ms, std::bind(&OmniJoyDriverROS::publish, this));
+      100ms, std::bind(&OmniJoyDriverROS2::publish, this));
 
 }
 
 
 
-void OmniJoyDriverROS::readParam()
+void OmniJoyDriverROS2::readParam()
 {
 
   this->declare_parameter<int>("axis_linear_x", 1);
@@ -114,7 +114,7 @@ void OmniJoyDriverROS::readParam()
 
 
 
-void OmniJoyDriverROS::joyCallback(sensor_msgs::msg::Joy::SharedPtr msg)
+void OmniJoyDriverROS2::joyCallback(sensor_msgs::msg::Joy::SharedPtr msg)
 {
 
   geometry_msgs::msg::Twist vel;
@@ -140,7 +140,7 @@ void OmniJoyDriverROS::joyCallback(sensor_msgs::msg::Joy::SharedPtr msg)
 
 
 
-void OmniJoyDriverROS::publish()
+void OmniJoyDriverROS2::publish()
 {
 
   std::lock_guard<std::mutex> lock(publish_mutex_);
