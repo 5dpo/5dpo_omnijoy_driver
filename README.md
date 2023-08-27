@@ -1,6 +1,6 @@
 # [5dpo_omnijoy_driver](https://github.com/5dpo/5dpo_omnijoy_driver/)
 
-**Version 0.0.0**
+**Version 0.1.0**
 
 This repository implements a ROS driver to control an omnidirectional robot
 (but also compatible with other steering geometries) with a joystick controller.
@@ -8,6 +8,7 @@ This repository implements a ROS driver to control an omnidirectional robot
 **With this version, it is possible to do:**
 
 - Joystick control of a mobile robot
+- Dynamic reconfigure of the node parameters
 
 **The next version will add these features:**
 
