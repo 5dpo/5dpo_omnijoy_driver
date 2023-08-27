@@ -48,6 +48,12 @@ OmniJoyDriverROS2::OmniJoyDriverROS2() : Node("sdpo_omnijoy_driver")
   timer_ = this->create_wall_timer(
       100ms, std::bind(&OmniJoyDriverROS2::publish, this));
 
+
+
+  on_set_param_callback_handle_ = this->add_on_set_parameters_callback(
+      std::bind(&OmniJoyDriverROS2::onSetParamCallback, this,
+          std::placeholders::_1));
+
 }
 
 
@@ -55,39 +61,22 @@ OmniJoyDriverROS2::OmniJoyDriverROS2() : Node("sdpo_omnijoy_driver")
 void OmniJoyDriverROS2::readParam()
 {
 
-  this->declare_parameter<int>("axis_linear_x", 1);
-  this->declare_parameter<int>("axis_linear_y", 2);
-  this->declare_parameter<int>("axis_angular", 0);
-  this->declare_parameter<int>("axis_deadman", 4);
-  this->declare_parameter<int>("axis_turbo", 5);
-  this->declare_parameter<int>("axis_turbo_up", 6);
-  this->declare_parameter<int>("axis_turbo_down", 7);
+  linearx_ = this->declare_parameter<int>("axis_linear_x", 1);
+  lineary_ = this->declare_parameter<int>("axis_linear_y", 2);
+  angular_ = this->declare_parameter<int>("axis_angular", 0);
+  deadman_axis_ = this->declare_parameter<int>("axis_deadman", 4);
+  turbo_axis_ = this->declare_parameter<int>("axis_turbo", 5);
+  turbo_up_axis_ = this->declare_parameter<int>("axis_turbo_up", 6);
+  turbo_down_axis_ = this->declare_parameter<int>("axis_turbo_down", 7);
 
-  this->declare_parameter<double>("scale_linear", 0.1);
-  this->declare_parameter<double>("scale_angular", 0.2);
-  this->declare_parameter<double>("turbo_scale_linear", 0.2);
-  this->declare_parameter<double>("turbo_max_scale_linear", 0.4);
-  this->declare_parameter<double>("turbo_scale_angular", 0.4);
-  this->declare_parameter<double>("turbo_max_scale_angular", 0.8);
-
-
-
-  linearx_ = this->get_parameter("axis_linear_x").as_int();
-  lineary_ = this->get_parameter("axis_linear_y").as_int();
-  angular_ = this->get_parameter("axis_angular").as_int();
-  deadman_axis_ = this->get_parameter("axis_deadman").as_int();
-  turbo_axis_ = this->get_parameter("axis_turbo").as_int();
-  turbo_up_axis_ = this->get_parameter("axis_turbo_up").as_int();
-  turbo_down_axis_ = this->get_parameter("axis_turbo_down").as_int();
-
-  l_scale_ = this->get_parameter("scale_linear").as_double();
-  a_scale_ = this->get_parameter("scale_angular").as_double();
-  l_turbo_scale_ = this->get_parameter("turbo_scale_linear").as_double();
+  l_scale_ = this->declare_parameter<double>("scale_linear", 0.1);
+  a_scale_ = this->declare_parameter<double>("scale_angular", 0.2);
+  l_turbo_scale_ = this->declare_parameter<double>("turbo_scale_linear", 0.2);
   l_turbo_maxscale_ =
-      this->get_parameter("turbo_max_scale_linear").as_double();
-  a_turbo_scale_ = this->get_parameter("turbo_scale_angular").as_double();
+      this->declare_parameter<double>("turbo_max_scale_linear", 0.4);
+  a_turbo_scale_ = this->declare_parameter<double>("turbo_scale_angular", 0.4);
   a_turbo_maxscale_ =
-      this->get_parameter("turbo_max_scale_angular").as_double();
+      this->declare_parameter<double>("turbo_max_scale_angular", 0.8);
 
 
 
@@ -222,6 +211,184 @@ void OmniJoyDriverROS2::publish()
 
     zero_twist_published_ = true;
   }
+
+}
+
+rcl_interfaces::msg::SetParametersResult OmniJoyDriverROS2::onSetParamCallback(
+    const std::vector<rclcpp::Parameter>& parameters)
+{
+
+  rcl_interfaces::msg::SetParametersResult result;
+  result.successful = true;
+
+
+
+  for (auto& param : parameters)
+  {
+
+    if ((param.get_name() == "axis_linear_x") ||
+        (param.get_name() == "axis_linear_y") ||
+        (param.get_name() == "axis_angular") ||
+        (param.get_name() == "axis_deadman") ||
+        (param.get_name() == "axis_turbo") ||
+        (param.get_name() == "axis_turbo_up") ||
+        (param.get_name() == "axis_turbo_down"))
+    {
+      try
+      {
+        if (param.get_value<int>() < 0)
+        {
+          result.successful = false;
+          result.reason = "joy.axes ID must be greater or equal to 0";
+
+          RCLCPP_ERROR(this->get_logger(),
+                       "Error when validating the axis ID parameter %s "
+                       "(error: %s)",
+                       param.get_name().c_str(), result.reason.c_str());
+
+          return result;
+        }
+      }
+      catch (std::exception& e)
+      {
+        result.successful = false;
+        result.reason = e.what();
+
+        RCLCPP_ERROR(this->get_logger(),
+                     "Error when validating the axis ID parameter %s "
+                     "(error: %s)", param.get_name().c_str(), e.what());
+
+        return result;
+      }
+    }
+
+    if ((param.get_name() == "scale_linear") ||
+        (param.get_name() == "scale_angular") ||
+        (param.get_name() == "turbo_scale_linear") ||
+        (param.get_name() == "turbo_max_scale_linear") ||
+        (param.get_name() == "turbo_scale_angular") ||
+        (param.get_name() == "turbo_max_scale_angular"))
+    {
+      try
+      {
+        if (param.get_value<double>() < 0)
+        {
+          result.successful = false;
+          result.reason = "scale parameters must be greater or equal to 0";
+
+          RCLCPP_ERROR(this->get_logger(),
+                       "Error when validating the scale parameter %s "
+                       "(error: %s)",
+                       param.get_name().c_str(), result.reason.c_str());
+
+          return result;
+        }
+      }
+      catch (std::exception& e)
+      {
+        result.successful = false;
+        result.reason = e.what();
+
+        RCLCPP_ERROR(this->get_logger(),
+                     "Error when validating the scale parameter %s "
+                     "(error: %s)", param.get_name().c_str(), e.what());
+
+        return result;
+      }
+    }
+
+
+
+    if (param.get_name() == "axis_linear_x")
+    {
+      linearx_ = param.get_value<int>();
+    }
+    else if (param.get_name() == "axis_linear_y")
+    {
+      lineary_ = param.get_value<int>();
+    }
+    else if (param.get_name() == "axis_angular")
+    {
+      angular_ = param.get_value<int>();
+    }
+    else if (param.get_name() == "axis_deadman")
+    {
+      deadman_axis_ = param.get_value<int>();
+    }
+    else if (param.get_name() == "axis_turbo")
+    {
+      turbo_axis_ = param.get_value<int>();
+    }
+    else if (param.get_name() == "axis_turbo_up")
+    {
+      turbo_up_axis_ = param.get_value<int>();
+    }
+    else if (param.get_name() == "axis_turbo_down")
+    {
+      turbo_down_axis_ = param.get_value<int>();
+    }
+    else if (param.get_name() == "scale_linear")
+    {
+      l_scale_ = param.get_value<double>();
+    }
+    else if (param.get_name() == "scale_angular")
+    {
+      a_scale_ = param.get_value<double>();
+    }
+    else if (param.get_name() == "turbo_scale_linear")
+    {
+      l_turbo_scale_ = param.get_value<double>();
+    }
+    else if (param.get_name() == "turbo_max_scale_linear")
+    {
+      l_turbo_maxscale_ = param.get_value<double>();
+    }
+    else if (param.get_name() == "turbo_scale_angular")
+    {
+      a_turbo_scale_ = param.get_value<double>();
+    }
+    else if (param.get_name() == "turbo_max_scale_angular")
+    {
+      a_turbo_maxscale_ = param.get_value<double>();
+    }
+    else
+    {
+      RCLCPP_INFO(this->get_logger(),
+                  "Ignoring unkown parameter '%s'", param.get_name().c_str());
+    }
+
+  }
+
+
+
+  RCLCPP_INFO(this->get_logger(), "axis_linear_x: %d", linearx_);
+  RCLCPP_INFO(this->get_logger(), "axis_linear_y: %d", lineary_);
+  RCLCPP_INFO(this->get_logger(), "axis_angular: %d", angular_);
+  RCLCPP_INFO(this->get_logger(), "axis_deadman: %d", deadman_axis_);
+  RCLCPP_INFO(this->get_logger(), "axis_turbo: %d", turbo_axis_);
+  RCLCPP_INFO(this->get_logger(), "axis_turbo_up: %d", turbo_up_axis_);
+  RCLCPP_INFO(this->get_logger(), "axis_turbo_down: %d", turbo_down_axis_);
+
+  RCLCPP_INFO(this->get_logger(), "scale_linear: %lf (m/s)", l_scale_);
+  RCLCPP_INFO(this->get_logger(), "scale_angular: %lf (rad/s)", a_scale_);
+  RCLCPP_INFO(this->get_logger(), "turbo_scale_linear: %lf (m/s)",
+              l_turbo_maxscale_);
+  RCLCPP_INFO(this->get_logger(), "turbo_max_scale_linear: %lf (m/s)",
+              l_turbo_scale_);
+  RCLCPP_INFO(this->get_logger(), "turbo_scale_angular: %lf (rad/s)",
+              a_turbo_scale_);
+  RCLCPP_INFO(this->get_logger(), "turbo_max_scale_angular: %lf (rad/s)",
+              a_turbo_maxscale_);
+
+
+
+  return result;
+
+  /* Source:
+   * https://roboticsbackend.com/ros2-rclcpp-parameter-callback/
+   * https://github.com/ros2/demos/blob/rolling/demo_nodes_cpp/src/parameters/set_parameters_callback.cpp
+   *    (the last one has pre, on and post set callback handlers)
+   */
 
 }
 

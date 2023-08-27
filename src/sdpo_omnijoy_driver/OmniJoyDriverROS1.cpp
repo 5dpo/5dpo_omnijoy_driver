@@ -41,6 +41,15 @@ OmniJoyDriverROS1::OmniJoyDriverROS1() : nh_priv_("~")
   timer_ = nh_.createTimer(ros::Duration(0.100),
       boost::bind(&OmniJoyDriverROS1::publish, this));
 
+
+
+  dynamic_reconfigure::Server<sdpo_omnijoy_driver::OmniJoyParamConfig>
+      ::CallbackType callback;
+
+  callback = boost::bind(&OmniJoyDriverROS1::cfgServerCallback, this, _1, _2);
+
+  cfg_server_.setCallback(callback);
+
 }
 
 
@@ -65,7 +74,7 @@ void OmniJoyDriverROS1::readParam()
 
 
 
-  ROS_INFO("[%s] axis_linear_x: %d",
+/*   ROS_INFO("[%s] axis_linear_x: %d",
       ros::this_node::getName().c_str(), linearx_);
   ROS_INFO("[%s] axis_linear_y: %d",
       ros::this_node::getName().c_str(), lineary_);
@@ -90,7 +99,7 @@ void OmniJoyDriverROS1::readParam()
   ROS_INFO("[%s] turbo_scale_angular: %lf (rad/s)",
       ros::this_node::getName().c_str(), a_turbo_scale_);
   ROS_INFO("[%s] turbo_max_scale_angular: %lf (rad/s)",
-      ros::this_node::getName().c_str(), a_turbo_maxscale_);
+      ros::this_node::getName().c_str(), a_turbo_maxscale_); */
 
 }
 
@@ -204,6 +213,58 @@ void OmniJoyDriverROS1::publish()
 
     zero_twist_published_ = true;
   }
+
+}
+
+
+
+void OmniJoyDriverROS1::cfgServerCallback(
+    sdpo_omnijoy_driver::OmniJoyParamConfig& config, uint32_t level)
+{
+
+  linearx_ = config.axis_linear_x;
+  lineary_ = config.axis_linear_y;
+  angular_ = config.axis_angular;
+  deadman_axis_ = config.axis_deadman;
+  turbo_axis_ = config.axis_turbo;
+  turbo_up_axis_ = config.axis_turbo_up;
+  turbo_down_axis_ = config.axis_turbo_down;
+
+  l_scale_ = config.scale_linear;
+  a_scale_ = config.scale_angular;
+  l_turbo_scale_ = config.turbo_scale_linear;
+  l_turbo_maxscale_ = config.turbo_max_scale_linear;
+  a_turbo_scale_ = config.turbo_scale_angular;
+  a_turbo_maxscale_ = config.turbo_max_scale_angular;
+
+
+
+  ROS_INFO("[%s] axis_linear_x: %d",
+      ros::this_node::getName().c_str(), linearx_);
+  ROS_INFO("[%s] axis_linear_y: %d",
+      ros::this_node::getName().c_str(), lineary_);
+  ROS_INFO("[%s] axis_angular: %d",
+      ros::this_node::getName().c_str(), angular_);
+  ROS_INFO("[%s] axis_deadman: %d",
+      ros::this_node::getName().c_str(), deadman_axis_);
+  ROS_INFO("[%s] axis_turbo: %d",
+      ros::this_node::getName().c_str(), turbo_axis_);
+  ROS_INFO("[%s] axis_turbo_up: %d",
+      ros::this_node::getName().c_str(), turbo_up_axis_);
+  ROS_INFO("[%s] axis_turbo_down: %d",
+      ros::this_node::getName().c_str(), turbo_down_axis_);
+  ROS_INFO("[%s] scale_linear: %lf (m/s)",
+      ros::this_node::getName().c_str(), l_scale_);
+  ROS_INFO("[%s] scale_angular: %lf (rad/s)",
+      ros::this_node::getName().c_str(), a_scale_);
+  ROS_INFO("[%s] turbo_scale_linear: %lf (m/s)",
+      ros::this_node::getName().c_str(), l_turbo_maxscale_);
+  ROS_INFO("[%s] turbo_max_scale_linear: %lf (m/s)",
+      ros::this_node::getName().c_str(), l_turbo_scale_);
+  ROS_INFO("[%s] turbo_scale_angular: %lf (rad/s)",
+      ros::this_node::getName().c_str(), a_turbo_scale_);
+  ROS_INFO("[%s] turbo_max_scale_angular: %lf (rad/s)",
+      ros::this_node::getName().c_str(), a_turbo_maxscale_);
 
 }
 
