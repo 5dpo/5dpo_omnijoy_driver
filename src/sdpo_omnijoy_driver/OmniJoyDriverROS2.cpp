@@ -55,39 +55,22 @@ OmniJoyDriverROS2::OmniJoyDriverROS2() : Node("sdpo_omnijoy_driver")
 void OmniJoyDriverROS2::readParam()
 {
 
-  this->declare_parameter<int>("axis_linear_x", 1);
-  this->declare_parameter<int>("axis_linear_y", 2);
-  this->declare_parameter<int>("axis_angular", 0);
-  this->declare_parameter<int>("axis_deadman", 4);
-  this->declare_parameter<int>("axis_turbo", 5);
-  this->declare_parameter<int>("axis_turbo_up", 6);
-  this->declare_parameter<int>("axis_turbo_down", 7);
+  linearx_ = this->declare_parameter<int>("axis_linear_x", 1);
+  lineary_ = this->declare_parameter<int>("axis_linear_y", 2);
+  angular_ = this->declare_parameter<int>("axis_angular", 0);
+  deadman_axis_ = this->declare_parameter<int>("axis_deadman", 4);
+  turbo_axis_ = this->declare_parameter<int>("axis_turbo", 5);
+  turbo_up_axis_ = this->declare_parameter<int>("axis_turbo_up", 6);
+  turbo_down_axis_ = this->declare_parameter<int>("axis_turbo_down", 7);
 
-  this->declare_parameter<double>("scale_linear", 0.1);
-  this->declare_parameter<double>("scale_angular", 0.2);
-  this->declare_parameter<double>("turbo_scale_linear", 0.2);
-  this->declare_parameter<double>("turbo_max_scale_linear", 0.4);
-  this->declare_parameter<double>("turbo_scale_angular", 0.4);
-  this->declare_parameter<double>("turbo_max_scale_angular", 0.8);
-
-
-
-  linearx_ = this->get_parameter("axis_linear_x").as_int();
-  lineary_ = this->get_parameter("axis_linear_y").as_int();
-  angular_ = this->get_parameter("axis_angular").as_int();
-  deadman_axis_ = this->get_parameter("axis_deadman").as_int();
-  turbo_axis_ = this->get_parameter("axis_turbo").as_int();
-  turbo_up_axis_ = this->get_parameter("axis_turbo_up").as_int();
-  turbo_down_axis_ = this->get_parameter("axis_turbo_down").as_int();
-
-  l_scale_ = this->get_parameter("scale_linear").as_double();
-  a_scale_ = this->get_parameter("scale_angular").as_double();
-  l_turbo_scale_ = this->get_parameter("turbo_scale_linear").as_double();
+  l_scale_ = this->declare_parameter<double>("scale_linear", 0.1);
+  a_scale_ = this->declare_parameter<double>("scale_angular", 0.2);
+  l_turbo_scale_ = this->declare_parameter<double>("turbo_scale_linear", 0.2);
   l_turbo_maxscale_ =
-      this->get_parameter("turbo_max_scale_linear").as_double();
-  a_turbo_scale_ = this->get_parameter("turbo_scale_angular").as_double();
+      this->declare_parameter<double>("turbo_max_scale_linear", 0.4);
+  a_turbo_scale_ = this->declare_parameter<double>("turbo_scale_angular", 0.4);
   a_turbo_maxscale_ =
-      this->get_parameter("turbo_max_scale_angular").as_double();
+      this->declare_parameter<double>("turbo_max_scale_angular", 0.8);
 
 
 
