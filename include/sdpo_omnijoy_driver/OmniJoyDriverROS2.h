@@ -3,6 +3,7 @@
 #include <mutex>
 
 #include <rclcpp/rclcpp.hpp>
+#include <rcl_interfaces/msg/set_parameters_result.hpp>
 #include <geometry_msgs/msg/twist.hpp>
 #include <sensor_msgs/msg/joy.hpp>
 
@@ -18,6 +19,11 @@ class OmniJoyDriverROS2 : public rclcpp::Node
 
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr vel_pub_;
   rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr joy_sub_;
+
+  rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr
+      on_set_param_callback_handle_;
+
+
 
   int linearx_;
   int lineary_;
@@ -68,6 +74,9 @@ class OmniJoyDriverROS2 : public rclcpp::Node
 
   void joyCallback(sensor_msgs::msg::Joy::SharedPtr msg);
   void publish();
+
+  rcl_interfaces::msg::SetParametersResult onSetParamCallback(
+      const std::vector<rclcpp::Parameter>& parameters);
 
 };
 
