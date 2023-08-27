@@ -99,9 +99,15 @@ elseif("$ENV{ROS_VERSION}" STREQUAL "1")
   # Find catkin macros and libraries
   find_package(catkin REQUIRED COMPONENTS
     roscpp
+    dynamic_reconfigure
     geometry_msgs
     joy
     sensor_msgs
+  )
+
+  # ROS dynamic reconfigure parameters
+  generate_dynamic_reconfigure_options(
+    cfg/sdpo_omnijoy_driver.cfg
   )
 
   # Catkin specific configuration
@@ -110,6 +116,7 @@ elseif("$ENV{ROS_VERSION}" STREQUAL "1")
     # LIBRARIES sdpo_drivers_interfaces
     CATKIN_DEPENDS
       roscpp
+      dynamic_reconfigure
       geometry_msgs
       joy
       sensor_msgs

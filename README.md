@@ -29,6 +29,7 @@ No further development is foreseen for this package.
 
 - [rclcpp](https://index.ros.org/r/rclcpp/) (_ROS 2_)
 - [roscpp](https://wiki.ros.org/roscpp/) (_ROS 1_)
+- [dynamic_reconfigure](https://index.ros.org/p/dynamic_reconfigure/) (_ROS 1_)
 - [geometry_msgs](https://index.ros.org/p/geometry_msgs/)
 - [joy](https://index.ros.org/p/joy/)
 - [sensor_msgs](https://index.ros.org/p/sensor_msgs/)
@@ -37,7 +38,7 @@ No further development is foreseen for this package.
 
 - axis_linear_x (`int = 1`): index number of x linear axis (`/joy.axes`)
 - axis_linear_y (`int = 2`): index number of y linear axis (`/joy.axes`)
-- axis_angular (`int = 0`): index number of angular linear axis (`/joy.axes`)
+- axis_angular (`int = 0`): index number of angular axis (`/joy.axes`)
 - axis_deadman (`int = 4`): index number of button for deadman switch
   (`/joy.buttons`)
 - axis_turbo (`int = 5`): index number of button for turbo (`/joy.buttons`)

@@ -45,6 +45,8 @@
   <depend condition="$ROS_VERSION == 2">rclcpp</depend>
   <depend condition="$ROS_VERSION == 1">roscpp</depend>
 
+  <depend condition="$ROS_VERSION == 1">dynamic_reconfigure</depend>
+
   <depend>geometry_msgs</depend>
   <depend>joy</depend>
   <depend>sensor_msgs</depend>

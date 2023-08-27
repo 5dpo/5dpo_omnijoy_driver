@@ -3,8 +3,11 @@
 #include <mutex>
 
 #include <ros/ros.h>
+#include <dynamic_reconfigure/server.h>
 #include <geometry_msgs/Twist.h>
 #include <sensor_msgs/Joy.h>
+
+#include "sdpo_omnijoy_driver/OmniJoyParamConfig.h"
 
 
 
@@ -20,6 +23,9 @@ class OmniJoyDriverROS1
 
   ros::Publisher vel_pub_;
   ros::Subscriber joy_sub_;
+
+  dynamic_reconfigure::Server<sdpo_omnijoy_driver::OmniJoyParamConfig>
+      cfg_server_;
 
   int linearx_;
   int lineary_;
@@ -70,6 +76,9 @@ class OmniJoyDriverROS1
 
   void joyCallback(const sensor_msgs::Joy::ConstPtr& msg);
   void publish();
+
+  void cfgServerCallback(sdpo_omnijoy_driver::OmniJoyParamConfig& config,
+      uint32_t level);
 
 };
 
