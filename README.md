@@ -142,4 +142,4 @@ ros2 launch sdpo_omnijoy_driver sdpo_omnijoy_driver_logif710.launch.xml
 ## Contacts
 
 If you have any questions or you want to know more about this work, please
-contact any member of the 5dpo Robotics Team.
+contact any member of the [5dpo Robotics Team](https://5dpo.github.io/).
