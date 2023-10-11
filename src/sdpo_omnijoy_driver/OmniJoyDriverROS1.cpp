@@ -57,20 +57,20 @@ OmniJoyDriverROS1::OmniJoyDriverROS1() : nh_priv_("~")
 void OmniJoyDriverROS1::readParam()
 {
 
-  nh_.param("axis_linear_x", linearx_, 1);
-  nh_.param("axis_linear_y", lineary_, 2);
-  nh_.param("axis_angular", angular_, 0);
-  nh_.param("axis_deadman", deadman_axis_, 4);
-  nh_.param("axis_turbo", turbo_axis_, 5);
-  nh_.param("axis_turbo_up", turbo_up_axis_, 6);
-  nh_.param("axis_turbo_down", turbo_down_axis_, 7);
+  nh_priv_.param("axis_linear_x", linearx_, 1);
+  nh_priv_.param("axis_linear_y", lineary_, 2);
+  nh_priv_.param("axis_angular", angular_, 0);
+  nh_priv_.param("axis_deadman", deadman_axis_, 4);
+  nh_priv_.param("axis_turbo", turbo_axis_, 5);
+  nh_priv_.param("axis_turbo_up", turbo_up_axis_, 6);
+  nh_priv_.param("axis_turbo_down", turbo_down_axis_, 7);
 
-  nh_.param("scale_linear", l_scale_, 0.1);
-  nh_.param("scale_angular", a_scale_, 0.2);
-  nh_.param("turbo_scale_linear", l_turbo_scale_, 0.2);
-  nh_.param("turbo_max_scale_linear", l_turbo_maxscale_, 0.4);
-  nh_.param("turbo_scale_angular", a_turbo_scale_, 0.4);
-  nh_.param("turbo_max_scale_angular", a_turbo_maxscale_, 0.8);
+  nh_priv_.param("scale_linear", l_scale_, 0.1);
+  nh_priv_.param("scale_angular", a_scale_, 0.2);
+  nh_priv_.param("turbo_scale_linear", l_turbo_scale_, 0.2);
+  nh_priv_.param("turbo_max_scale_linear", l_turbo_maxscale_, 0.4);
+  nh_priv_.param("turbo_scale_angular", a_turbo_scale_, 0.4);
+  nh_priv_.param("turbo_max_scale_angular", a_turbo_maxscale_, 0.8);
 
 
 
